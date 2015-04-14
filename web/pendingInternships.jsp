@@ -14,7 +14,7 @@
     <ul class="menu">
         <li class="menu-item">Internship Management System</li>
         <li class="menu-item"><a class="menu-link" href="pendingInternships">Pending Internships</a></li>
-        <li class="menu-item"><a class="menu-link" href="completedInternships">Confirmed Internships</a></li>
+        <li class="menu-item"><a class="menu-link" href="confirmedInternships">Confirmed Internships</a></li>
     </ul>
 </div>
 
@@ -31,18 +31,20 @@
 
         <tbody>
             <c:forEach var="internship" items="${internships}">
-                <c:forEach var="student" items="${users}">
-                    <c:if test="${internship.studentID == student.studentId}">
-                        <tr class="Task-row">
-                            <td>${internship.id}</td>
-                            <td>${student.firstName}</td>
-                            <td>${student.studentId}</td>
-                            <td>${student.completedCHs}</td>
-                            <td>${student.GPA}</td>
-                            <td><a href="confirmInternship.html">Confirm</a></td>
-                        </tr>
-                    </c:if>
-                </c:forEach>
+                <c:if test="${internship.IsConfirmed() == false}">
+                    <c:forEach var="student" items="${users}">
+                        <c:if test="${internship.studentID == student.studentId}">
+                            <tr class="Task-row">
+                                <td>${internship.id}</td>
+                                <td>${student.firstName}</td>
+                                <td>${student.studentId}</td>
+                                <td>${student.completedCHs}</td>
+                                <td>${student.GPA}</td>
+                                <td><a href="confirmInternship?internshipID=${internship.id}">Confirm</a></td>
+                            </tr>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
             </c:forEach>
     </table>
 </div>

@@ -1,17 +1,24 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <!DOCTYPE html>
 <html>
 <head lang="en">
+    <script src="js/jquery-2.1.3.js"></script>
     <meta charset="UTF-8">
-    <title>HifzTracker</title>
+    <title>Internship Management System</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="css/Styles.css" rel="stylesheet">
+    
+    
+   
+        
+        
 </head>
 <body>
 
 <!--Navigation Bar-->
 <div class="navbar-fixed-top">
     <ul class="menu">
-        <li class="menu-item"><a class="menu-link logo" href="index.html">Internship Tracker</a></li>
+        <li class="menu-item"><a class="menu-link logo" href="index.html">Internship Management System</a></li>
     </ul>
 </div>
 
@@ -20,17 +27,18 @@
 
     <h1>Confirm Internship</h1>
     <br><br>
-    <form>
+    <form action="confirmInternship" method="post">
+        <input type='hidden' value ='${internship.id}' name='internshipIndex'>
         <div class="Field">
             <h2>Student Information</h2>
             <br>
-            <label>Name: Abdul</label>
+            <label>Name: ${user.firstName}</label>
             <br>
-            <label>Student ID: Abdul</label>
+            <label>Student ID: ${user.studentId}</label>
             <br>
-            <label>Completed Hours: Abdul</label>
+            <label>Completed Hours: ${user.completedCHs}</label>
             <br>
-            <label>GPA: Abdul</label>
+            <label>GPA: ${user.GPA}</label>
         </div>
 
         <div class="Field">
@@ -39,22 +47,20 @@
 
             <label>Select from: </label>
             <br>
-            <input type="radio" name = "selectFrom" value="existing" checked="checked" onclick="document.getElementById('addCompany').style.display = 'none';document.getElementById('availableCompanies').style.display = 'block';">
+            <input type="radio" id = "existingCompany" name = "selectFrom" value="existing" checked="checked" >
             <label>Existing companies</label>
             <br>
-            <input type="radio" name = "selectFrom" value="new" onclick="document.getElementById('availableCompanies').style.display = 'none';document.getElementById('addCompany').style.display = 'block';">
+            <input type="radio" id = "newCompany" name = "selectFrom" value="new" >
             <label>Add company</label>
             <br><br>
 
             <div id="availableCompanies"  >
                 <label>Available Companies</label>
                 <br>
-                <select>
-                    <option>company one</option>
-                    <option>company two</option>
-                    <option>company three</option>
-                    <option>company four</option>
-                    <option>company five</option>
+                <select name='selectedCompany' id='selectedCompany'>
+                    <c:forEach var="company" items="${companies}">
+                        <option value="${company.id}">${company.name}</option>
+                    </c:forEach>
                 </select>
             </div>
 
@@ -63,40 +69,40 @@
                 <br>
                 <label>Company Name</label>
                 <br>
-                <input type="text">
+                <input name = "companyName" id="companyName" type="text" required>
                 <br>
 
                 <br>
                 <label>Street</label>
                 <br>
-                <input type="text">
+                <input name = "street" id="street" type="text" required>
                 <br>
 
 
                 <br>
                 <label>City</label>
                 <br>
-                <input type="text">
+                <input name = "city" id="city" type="text" required>
                 <br>
 
                 <br>
                 <label>Phone</label>
                 <br>
-                <input type="text">
+                <input name = "phone" id="phone" type="tel" required>
                 <br>
 
 
                 <br>
                 <label>Website</label>
                 <br>
-                <input type="text">
+                <input name = "website" id="website" type="url" required>
                 <br>
 
 
                 <br>
                 <label>Email</label>
                 <br>
-                <input type="text">
+                <input name = "email" id="email" type="email" required>
                 <br>
 
 
@@ -115,5 +121,28 @@
     </form>
 </div>
 
+         <script type='text/javascript'>
+             $(document).ready(function(){
+               $("#addCompany > input").removeAttr("required");
+                $("#existingCompany").prop("checked", true);
+             });
+                    $("#existingCompany").click(function(){
+                        $("#addCompany > input").removeAttr("required");
+                        $('#availableCompanies').css('display',"block");
+                        $('#addCompany').css('display','none'); 
+                    });
+
+
+                    $("#newCompany").click(function(){
+
+
+                        $('#availableCompanies').css('display',"none")
+                        $('#addCompany').css('display','block'); 
+                        $('#addCompany > input').attr('required', 'true');
+                    });
+           
+                
+            
+        </script>
 </body>
 </html>

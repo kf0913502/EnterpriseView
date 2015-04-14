@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -31,16 +32,30 @@
 
             <tbody>
 
-
-            <tr class="Task-row">
-                <td class="critereaTD">This is the description for criterea one and this is really really really really long really really really really long</td>
-                <td>
-                    Excellent (Grade * 1)
-                </td>
-                <td class = "commentTD"><p>My comment on your performance</p></td>
-            </tr>
-
-
+                        <c:forEach var="category" items="${categories}">
+                <tr><td colspan="7"><h2>${category}</h2></td></tr>
+                <c:forEach var="criterea" items="${critereas}" varStatus="loopIndex">
+                    <c:if test="${criterea.category == category}">
+                        <tr class="Task-row">
+                            <td class="critereaTD"><p class = "critereaTitleText">${loopIndex.count}. ${criterea.title} (out of ${criterea.grade})</p>${criterea.description}</td>
+                                <td>
+                                        <c:forEach var="examiner" items="${internship.examiners}" varStatus="examinerNo">
+                                            <c:if test="${internship.getExaminerGrade(examiner.key) != null}"> Examiner ${examinerNo.count}: <p>${ratings.get(internship.getExaminerGrade(examiner.key).getGradeForCriterea(criterea.id)-1).title}</p></c:if> 
+                                        </c:forEach>
+                                        
+                                </td>
+                                <td class = "commentTD" >
+                                <c:forEach var="examiner" items="${internship.examiners}" varStatus="examinerNo">
+                                    <c:if test="${internship.getExaminerGrade(examiner.key) != null}">
+                                        <p>Examiner ${examinerNo.count}: ${internship.getExaminerGrade(examiner.key).getCommentForCriterea(criterea.id)}</p>
+                                    </c:if> 
+                                </c:forEach>
+                                </td>
+                        </tr>
+                    </c:if>
+               </c:forEach>
+            </c:forEach>
+        </tbody>
         </table>
         <br>
         <br>

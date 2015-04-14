@@ -256,3 +256,10 @@ form.authentication .form-actions .btn {
 {
     text-align: center;
 }
+
+.critereaTitleText
+{
+    color:#2aabd2;
+    font-weight: bold;
+    text-align: center;
+}

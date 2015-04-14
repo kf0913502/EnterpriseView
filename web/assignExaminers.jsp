@@ -1,6 +1,8 @@
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <!DOCTYPE html>
 <html>
 <head lang="en">
+    <script src="js/jquery-2.1.3.js"></script>
     <meta charset="UTF-8">
     <title>Internship Management System</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet">
@@ -20,15 +22,15 @@
 
     <h1>Assign Examiners</h1>
     <br><br>
-    <form>
+    <form action="assignExaminers" method="post" id="myform">
         <div class="Field">
             <h2>Internship Information</h2>
             <br>
-            <label>Student Name: Abdul</label>
+            <label>Student Name: ${user.firstName}</label>
             <br>
-            <label>Student ID: Abdul</label>
+            <label>Student ID: ${user.studentId}</label>
             <br>
-            <label>Company Name: Abdul</label>
+            <label>Company Name: ${company.name}</label>
         </div>
 
         <div class="Field">
@@ -38,23 +40,19 @@
 
                 <label>Examiner One</label>
                 <br>
-                <select>
-                    <option>company one</option>
-                    <option>company two</option>
-                    <option>company three</option>
-                    <option>company four</option>
-                    <option>company five</option>
+                <select id="examinerOne" name="examinerOne">
+                    <c:forEach var="examiner" items="${staffMembers}">
+                        <option value = "${examiner.staffNo}" >${examiner.firstName}</option>
+                    </c:forEach>
                 </select>
 
                 <br><br>
                 <label>Examiner Two</label>
                 <br>
-                <select>
-                    <option>company one</option>
-                    <option>company two</option>
-                    <option>company three</option>
-                    <option>company four</option>
-                    <option>company five</option>
+                <select id="examinerTwo" name="examinerTwo">
+                    <c:forEach var="examiner" items="${staffMembers}">
+                        <option value = "${examiner.staffNo}" >${examiner.firstName}</option>
+                    </c:forEach>
                 </select>
             <br><br>
 
@@ -65,18 +63,18 @@
             <br>
             <label>Time</label>
             <br>
-            <input type="text">
+            <input type="text" id = "time">
 
 
             <br><br>
             <label>Date</label>
             <br>
-            <input type="date">
+            <input type="date" id="date">
 
             <br><br>
             <label>Location</label>
             <br>
-            <input type="text">
+            <input type="text" id="location">
 
             <br><br>
         </div>
@@ -87,8 +85,20 @@
         <div class="formSubmit">
             <input type="submit" value="Confirm">
         </div>
+            <input type="hidden" value="${internship.id}" name="internshipIndex">
     </form>
 </div>
 
+        <script type="text/javascript">
+            $("#myform").submit(function(e){
+                
+                if ($("#examinerOne").val()== $("#examinerTwo").val())
+                {
+                    alert("Choose two different examiners");
+                    e.preventDefault();
+                }
+            });
+            
+        </script>
 </body>
 </html>
