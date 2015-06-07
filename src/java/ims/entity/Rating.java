@@ -8,7 +8,6 @@ import javax.persistence.Id;
 @Entity
 public class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String title;
     private float percentage;

@@ -2,6 +2,7 @@ package ims.repository;
 
 import ims.entity.Company;
 import com.google.gson.Gson;
+import ims.entity.Internship;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Singleton
 public class CompanyRepository {
@@ -19,24 +21,25 @@ public class CompanyRepository {
     private final String companiesUrl = "http://erradi.github.io/json/company.json";
 
     public Company getCompany(int id) {
-        if (companies.isEmpty()) {
-            this.initialize();
-        }
+        
+        return em.find(Company.class, id);
 
-        Optional<Company> company
-                = companies.stream().filter(c -> c.getId() == id).findFirst();
-
-        return company.isPresent() ? company.get() : null;
     }
 
     public Company getCompany(String name) {
-        if (companies.isEmpty()) {
+               if (companies.isEmpty()) {
             this.initialize();
         }
-        Optional<Company> company
-                = companies.stream().filter(c -> c.getName().equals(name)).findFirst();
-
-        return company.isPresent() ? company.get() : null;
+               
+               
+        Query q = em.createQuery("select c from Company c where c.name :cname");
+        q.setParameter("cname",name);
+        List<Company> results = q.getResultList();
+        
+        if (results == null || results.isEmpty()) return null;
+        else return results.get(0);
+    
+ 
     }
 
     public void initialize() {
@@ -64,13 +67,17 @@ public class CompanyRepository {
         if (companies.isEmpty()) {
             initialize();
         }
-        return companies;
+        
+        Query q = em.createQuery("select c from Company c");
+        return q.getResultList();
+   
     }
 
     public int addCompany(Company company) {
-        company.setId(++lastCompanyId);
-        companies.add(company);
-        return lastCompanyId;
+        
+        em.persist(company);
+
+        return 2;
     }
 
     public boolean exists(String companyName) {

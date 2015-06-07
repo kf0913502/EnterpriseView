@@ -41,7 +41,7 @@
                     </thead>
 
                     <tbody>
-                      <c:forEach var="criterion" items="${criteria}" varStatus="loopIndex">
+                     <c:forEach var="criterion" items="${criteria}" varStatus="loopIndex">
                       <tr>
                         <input type="hidden" name="criteriaId" value="${criterion.id}">
                         <td class="criteria" data-grade="${criterion.grade}">
@@ -56,7 +56,10 @@
                                 <c:forEach var="rating" items="${ratings}">
                                     <option value="${rating.id}" 
                                             data-percentage="${rating.percentage}"
+                                            <c:if test="${!empty internship.gradeItems}">
                                             ${rating.id eq internship.gradeItems.get(loopIndex.count-1).rating.id ? "selected" : ""}
+     
+                                            </c:if>
                                             >
                                         ${rating.title}
                                     </option>
@@ -64,7 +67,7 @@
                             </select>
                         </td>
                         <td>
-                            <textarea name="comment">${internship.gradeItems.get(loopIndex.count-1).comment}</textarea>
+                            <textarea name="comment"><c:if test="${!empty internship.gradeItems}">${internship.gradeItems.get(loopIndex.count-1).comment}</c:if></textarea>
                         </td>
                      </tr>
                      </c:forEach>

@@ -10,6 +10,7 @@ import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Singleton
 public class InternshipRepository {
@@ -24,20 +25,23 @@ public class InternshipRepository {
     private int lastInternshipId = 0;
 
     public Internship getInternship(int studentId) {
-        Optional<Internship> internship = internships.stream().filter(i -> i.getStudent().getStudentId() == studentId).findFirst();
-        return internship.isPresent() ? internship.get() : null;
+        Query q = em.createQuery("select i from Internship i where i.student.id = :StudentID");
+        q.setParameter("StudentID",studentId);
+        List<Internship> results = q.getResultList();
+        
+        if (results == null || results.isEmpty()) return null;
+        else return results.get(0);
     }
 
     public Internship getInternshipById(int id) {
-        Optional<Internship> internship = internships.stream().filter(i -> i.getId() == id).findFirst();
-        return internship.isPresent() ? internship.get() : null;
+        return em.find(Internship.class, id);
+
     }
 
     public List<Internship> getInternships() {
-        if (internships == null || internships.isEmpty()) {
-            insertTestData();
-        }
-        return internships;
+        
+        Query q = em.createQuery("select i from Internship i");
+        return q.getResultList();
     }
 
     public int addInternship(Internship internship) {
@@ -50,31 +54,23 @@ public class InternshipRepository {
     }
 
     public void removeInternship(Internship internship) {
-        internships.remove(internship);
+        em.remove(internship);
     }
 
     public List<Internship> getInternships(int examinerId) {
-        if (internships == null || internships.isEmpty()) {
-            insertTestData();
-        }
-        List<Internship> examinerInternships = internships.stream().filter(i -> i.getExaminer() != null && i.getExaminer().getStaffNo() == examinerId).collect(Collectors.toList());
-        return examinerInternships;
+        Query q = em.createQuery("select i from Internship i where i.examiner.id = :EID");
+        q.setParameter("EID",examinerId);
+        return q.getResultList();
+        
     }
 
     public List<Internship> getInternships(String state) {
-        if (internships == null || internships.isEmpty()) {
-            insertTestData();
-        }
-
-        //if state is "all" , just return all intenrships
-        if (state.equals("all")) {
-            return getInternships();
-        }
-
-        List<Internship> internshipList = 
-                internships.stream().filter(i -> i.getStatus().equals(state)).collect(Collectors.toList());
-                
-        return internshipList;
+        
+        if (state == "all") return this.getInternships();
+        Query q = em.createQuery("select i from Internship i where i.status = :status");
+        q.setParameter("status",state);
+        return q.getResultList();
+       
     }
 
     public List<String> getInternshipStates() {
@@ -88,44 +84,16 @@ public class InternshipRepository {
     }
 
     public void updateInternship(Internship internship) {
-        for (int i = 0; i < internships.size(); i++) {
-            if (internships.get(i).getId() == internship.getId()) {
-                internships.set(i, internship);
-                break;
-            }
-        }
+        em.merge(internship);
     }
 
     public void confirmInternship(int internshipId, int companyId) {
-        Company company = companyRepository.getCompany(companyId);
-        Internship internship = getInternshipById(internshipId);
-        internship.setHostCompany(company);
-        internship.setStatus("confirmed");
-        updateInternship(internship);
+        
+        Internship i = this.getInternshipById(internshipId);
+        i.setStatus("confirmed");
+        i.setHostCompany(companyRepository.getCompany(companyId));
+        em.merge(i);
     }
 
-    private void insertTestData() {
-        internships = new ArrayList<>();
-        Internship internship = new Internship();
-        internship.setStudent(userRepository.getStudent("student1"));
-        internship.setStatus("confirmed");
-        internship.setYear(2015);
-        internship.setHostCompany(companyRepository.getCompany("Mada"));
-        internship.setExaminer(userRepository.getFaculty(501));
-        addInternship(internship);
 
-        internship = new Internship();
-        internship.setStudent(userRepository.getStudent("student2"));
-        internship.setStatus("pending");
-        internship.setYear(2015);
-        addInternship(internship);
-
-        internship = new Internship();
-        internship.setStudent(userRepository.getStudent("student3"));
-        internship.setStatus("confirmed");
-        internship.setYear(2015);
-        internship.setHostCompany(companyRepository.getCompany("AlJazeera"));
-        internship.setExaminer(userRepository.getFaculty(501));
-        addInternship(internship);
-    }
 }

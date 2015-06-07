@@ -21,7 +21,7 @@ public abstract class User {
     private String password;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     
     public User() {}
     public User(String firstName, String lastName, String email, String username, String password) {
@@ -80,11 +80,11 @@ public abstract class User {
         return String.format("%s %s", firstName, lastName);
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

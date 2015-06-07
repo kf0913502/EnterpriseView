@@ -12,27 +12,39 @@ import javax.persistence.ManyToOne;
 public class GradeItem
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
+    public int CID;
+
+    public int getCID() {
+        return CID;
+    }
+
+    public void setCID(int CID) {
+        this.CID = CID;
+    }
+
+    public int getIID() {
+        return IID;
+    }
+
+    public void setIID(int IID) {
+        this.IID = IID;
+    }
     
+    
+        @Id
+    public int IID;
     
     public String comment;
-    @JoinColumn(name="CRITEREA_ID")
+    @JoinColumn(name="CID")
     public Criteria criteria;
     @JoinColumn(name="RATING_ID")
     public Rating rating;
     
     @ManyToOne
-    @JoinColumn(name="INTERNSHIP_ID")
+    @JoinColumn(name="IID")
     public Internship internship;       
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public Internship getInternship() {
         return internship;

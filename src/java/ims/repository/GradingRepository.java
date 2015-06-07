@@ -9,6 +9,7 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Singleton
 public class GradingRepository {
@@ -24,14 +25,15 @@ public class GradingRepository {
         if (criteria == null) {
             loadCriteria();
         }
-        return criteria;
+         Query q = em.createQuery("select c from Criteria c ORDER BY c.id");
+         return q.getResultList();
     }
 
     public Criteria getCriteria(int id) {
         if (criteria != null) {
             loadCriteria();
         }
-        return criteria.stream().filter(c -> c.getId() == id).findFirst().get();
+        return em.find(Criteria.class, id);
     }
 
     public void loadCriteria() {
@@ -43,7 +45,10 @@ public class GradingRepository {
         System.out.println(criteriasStr);
 
         Criteria[] criteriaArray = gson.fromJson(criteriasStr, Criteria[].class);
-
+        
+        for (Criteria c : Arrays.asList(criteriaArray))
+            em.persist(c);
+        
         criteria = new ArrayList<>(Arrays.asList(criteriaArray));
     }
 
@@ -51,14 +56,15 @@ public class GradingRepository {
         if (ratings == null) {
             loadRating();
         }
-        return ratings;
+         Query q = em.createQuery("select r from Rating r ORDER BY r.id");
+         return q.getResultList();
     }
 
     public Rating getRating(int id) {
         if (ratings == null) {
             loadRating();
         }
-        return ratings.stream().filter(c -> c.getId() == id).findFirst().get();
+        return em.find(Rating.class,id);
     }
 
     public void loadRating() {

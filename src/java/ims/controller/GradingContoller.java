@@ -43,7 +43,7 @@ public class GradingContoller extends HttpServlet {
         }
 
         Faculty examiner = (Faculty) request.getSession().getAttribute("user");
-        List<Internship> internships = internshipRepository.getInternships(examiner.getStaffNo());
+        List<Internship> internships = internshipRepository.getInternships(examiner.getId());
 
         if (internships != null && !internships.isEmpty()) {
             System.out.println("internships.count: " + internships.size());

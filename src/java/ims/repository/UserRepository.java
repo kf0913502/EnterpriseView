@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 @Singleton
 public class UserRepository {
@@ -24,26 +25,32 @@ public class UserRepository {
     private final String studentUrl = "http://erradi.github.io/json/student.json";
 
     public List<Faculty> getFaculty() {
-        return users.stream().filter(u -> u instanceof Faculty).map(user -> (Faculty) user).collect(Collectors.toList());
-    }
-
-    public Student getStudent(String username) {
-        Optional<Student> student = users.stream().filter(u -> u instanceof Student && u.getUsername().equals(username)).map(user -> (Student) user).findFirst();
-        return student.isPresent() ? student.get() : null;
+        Query q = em.createQuery("select f from Faculty f ORDER BY f.staffNo");
+        return q.getResultList();
     }
 
     public Faculty getFaculty(int staffNo) {
-        Optional<Faculty> faculty = users.stream().filter(u -> u instanceof Faculty && ((Faculty) u).getStaffNo() == staffNo).map(user -> (Faculty) user).findFirst();
-        return faculty.isPresent() ? faculty.get() : null;
+        
+        Query q = em.createQuery("select f from Faculty f where f.staffNo = :staffNo");
+        q.setParameter("staffNo",staffNo);
+        List<Faculty> results = q.getResultList();
+        
+        if (results == null || results.isEmpty()) return null;
+        else return results.get(0);
+        
     }
 
     public User getUser(String username, String password) {
         if (users == null) {
             loadUsers();
         }
-        System.out.println("users.size: " + users.size());
-        Optional<User> user = users.stream().filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password)).findFirst();
-        return user.isPresent() ? user.get() : null;
+        Query q = em.createQuery("select u from User u where u.username = :UN and u.password = :PW");
+        q.setParameter("UN",username);
+        q.setParameter("PW", password);
+        List<Faculty> results = q.getResultList();
+        
+        if (results == null || results.isEmpty()) return null;
+        else return results.get(0);
     }
 
     public void loadUsers() {
