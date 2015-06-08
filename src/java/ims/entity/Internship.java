@@ -2,7 +2,9 @@ package ims.entity;
 
 import ims.repository.Utils;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +15,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
+import static java.util.Comparator.comparing;
 @Entity
 public class Internship {
 
@@ -43,7 +45,7 @@ public class Internship {
     @JoinColumn(name="EXAMINER_ID")
     private Faculty examiner;
     
-    @OneToMany(mappedBy="internship")
+    @OneToMany(mappedBy="internship", cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     private List<GradeItem> gradeItems;
 
     public Internship() {
@@ -98,11 +100,13 @@ public class Internship {
     }
 
     public List<GradeItem> getGradeItems() {
+
         return gradeItems;
     }
 
     public void setGradeItems(List<GradeItem> gradeItems) {
-        this.gradeItems = gradeItems;
+        
+        this.gradeItems = gradeItems; 
     }
 
     public Company getHostCompany() {

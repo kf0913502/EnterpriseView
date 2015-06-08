@@ -2,9 +2,11 @@ package ims.repository;
 
 import ims.entity.Criteria;
 import com.google.gson.Gson;
+import ims.entity.GradeItem;
 import ims.entity.Rating;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
@@ -45,11 +47,16 @@ public class GradingRepository {
         System.out.println(criteriasStr);
 
         Criteria[] criteriaArray = gson.fromJson(criteriasStr, Criteria[].class);
-        
-        for (Criteria c : Arrays.asList(criteriaArray))
-            em.persist(c);
-        
         criteria = new ArrayList<>(Arrays.asList(criteriaArray));
+        
+        
+        for (Criteria c : criteria)
+        {
+            em.persist(c);
+        }
+        
+        
+                
     }
 
     public List<Rating> getRatings() {

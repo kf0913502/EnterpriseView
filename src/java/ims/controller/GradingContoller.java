@@ -10,6 +10,7 @@ import ims.repository.InternshipRepository;
 import ims.repository.UserRepository;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -58,7 +59,19 @@ public class GradingContoller extends HttpServlet {
             }
             
             request.setAttribute("selectedInternshipId", selectedInternshipId);
+            
+            List<GradeItem> grades = selectedInternship.getGradeItems();
+            
+            if (grades != null)
+                Collections.sort(grades, (GradeItem c1, GradeItem c2) -> {
+            return Integer.compare(c1.getCriteria().getId(), c2.getCriteria().getId());
+        });
             request.setAttribute("internship", selectedInternship);
+            
+            if (selectedInternship.getGradeItems() != null)
+            for (GradeItem g : grades)
+                System.out.println(g.getCriteria().getId());
+            
             request.setAttribute("internships", internships);
             request.setAttribute("criteria", gradingRepository.getCriteria());
             request.setAttribute("ratings", gradingRepository.getRatings());
@@ -87,7 +100,9 @@ public class GradingContoller extends HttpServlet {
             gradeItem.setCriteria(criteria);
             gradeItem.setRating(rating);
             gradeItem.setComment(comment);
+            gradeItem.setInternship(internship);
             gradeItems.add(gradeItem);
+            
         }
 
         internship.setGradeItems(gradeItems);

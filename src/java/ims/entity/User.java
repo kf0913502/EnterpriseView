@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 @Table(name="IMUser")
-public abstract class User {
+public class User {
     private String firstName;
     private String lastName;
     private String email;

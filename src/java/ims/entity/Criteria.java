@@ -30,7 +30,7 @@ public class Criteria {
         this.grade = grade;
     }
 
-    public int getId() {
+    public int getId() { 
         return id;
     }
 
