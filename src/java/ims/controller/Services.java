@@ -82,12 +82,12 @@ public class Services {
     }
     
     @GET
-    @Path("/pendingInternships")
+    @Path("/internships/{stat}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response pendingInternships()
+    public Response Internships(@PathParam("stat") String stat)
     {
         Gson gson = new Gson();
-        List<Internship> pendingInternships = internshipRepository.getInternships("pending");
+        List<Internship> pendingInternships = internshipRepository.getInternships(stat);
 
 
         return Response.ok(gson.toJson(pendingInternships)).build();
@@ -95,20 +95,6 @@ public class Services {
 
     }
     
-    
-        @GET
-    @Path("/confirmedInternships")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response confirmedInternships()
-    {
-        Gson gson = new Gson();
-        List<Internship> confirmedInternships = internshipRepository.getInternships("confirmed");
-
-
-        return Response.ok(gson.toJson(confirmedInternships)).build();
-   
-
-    }
     
     @GET
     @Path("/internship/{internshipID}")
@@ -134,6 +120,17 @@ public class Services {
         internshipRepository.addInternship(internship);
         return Response.ok().build();
     }
+    
+    @POST
+    @Path("/addCompany")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response addCompany(Company company)
+    {
+        
+        companyRepository.addCompany(company);
+        return Response.ok().build();
+    }
+    
     
     @PUT
     @Path("/confirmInternship")
@@ -194,12 +191,24 @@ public class Services {
     @GET
     @Path("/companies")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response companies()
+    public Response companies() 
     {
         Gson gson = new Gson();
         List<Company> companies = companyRepository.getCompanies();
 
 
         return Response.ok(gson.toJson(companies)).build();
+    }
+    
+    @GET
+    @Path("/faculty")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response faculty()
+    {
+        Gson gson = new Gson();
+        List<Faculty> faculties = userRepository.getFaculty();
+ 
+
+        return Response.ok(gson.toJson(faculties)).build();  
     }
 }

@@ -45,7 +45,8 @@ public class InternshipRepository {
     }
 
     public int addInternship(Internship internship) {
-        
+        internship.setStatus("pending");
+        internship.setYear(2015);
         em.persist(internship);
         /*internship.setId(++lastInternshipId);
         internships.add(internship);
@@ -66,7 +67,7 @@ public class InternshipRepository {
 
     public List<Internship> getInternships(String state) {
         
-        if (state == "all") return this.getInternships();
+        if (state.equals( "all")) return this.getInternships();
         Query q = em.createQuery("select i from Internship i where i.status = :status");
         q.setParameter("status",state);
         return q.getResultList();

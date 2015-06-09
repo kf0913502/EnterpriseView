@@ -1,35 +1,16 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
-<!DOCTYPE html>
-<html>
-    <head >
-        <title>Internship Management System</title>
-        <link href="css/styles.css" rel="stylesheet" type="text/css"/>
-    </head>
-    <body>
-        <jsp:include page="header.jsp" />
+
         <br>
-        <form action="internships" method="post">
+        <form>
             <label for="state">Status</label>
-            <select id ="state" name="state" onchange='this.form.submit()'>
-                <c:forEach var="state" items="${states}">
-                    <option value="${state}"
-                            ${selectedState eq state ? "selected" : "" }>
-                        ${state}
-                    </option>
-                </c:forEach>
+            <select  ng-model="currentStatus"  ng-options = "stat as stat for stat in stats" ng-change="getInternships();">
             </select>
         </form>
         <br>
-        <c:if test='${not empty message}'>
-            <p class='message'>${message}</p>
-            <c:remove var="message" scope="session" />
-        </c:if>
 
-        <c:if test="${empty internships}">
-            <p>  There are no ${selectedState eq 'all' ? " " : selectedState} internship.</p>
-        </c:if>
-        <c:if test="${not empty internships}">
-            <table id="internshipListTable" name="internshipListTable" >
+
+        <p ng-show = "internships.length == 0">  There are no <span ng-show = "currentStatus == 'pending' || currentStatus == 'confirmed'">{{currentStatus}} </span> internships.</p>
+
+            <table ng-show = "itnernships.length != 0" id="internshipListTable" name="internshipListTable" >
                 <thead>
                     <tr>
                         <th>#</th>
@@ -44,38 +25,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="internship" items="${internships}">
-                        <tr>
-                            <td> ${internship.id} </td>
-                            <td> ${internship.student.studentId}</td>
-                            <td> ${internship.student.firstName} ${internship.student.lastName}</td>
-                            <td> ${internship.year} </td>
-                            <td> ${internship.status} </td>
-                            <td> ${internship.hostCompany.name} </td>
-                            <td> ${internship.examiner.name} </td>
+                    
+                    <tr ng-repeat="internship in internships">
+                            <td> {{internship.id}} </td>
+                            <td> {{internship.student.studentId}}</td>
+                            <td> {{internship.student.firstName}} {{internship.student.lastName}}</td>
+                            <td> {{internship.year}} </td>
+                            <td> {{internship.status}} </td>
+                            <td> {{internship.hostCompany.name}} </td>
+                            <td> {{internship.examiner.firstName}}  {{internship.examiner.lastName}} </td>
                             <td>
-                                ${internship.presentationDate} ${internship.presentationTime} 
-                                ${not empty internship.presentationLocation ? "@ " : ""}
-                                ${internship.presentationLocation}
+                                <span ng-show="internship.hasOwnProperty('presentationDate')">{{internship.presentationDate}} {{internship.presentationTime}} 
+                                    {{internship.presentationLocation}}</span>
                             </td>
-                            <c:if test='${internship.status eq "pending"}'>
-                                <td>
-                                    <a href="confirm?internshipId=${internship.id}">
+
+                                <td ng-show="internship.status == 'pending'">
+                                    <a href="#/coordinatorConfirm?internshipId={{internship.id}}">
                                         Confirm
                                     </a>               
                                 </td>
-                            </c:if>
-                            <c:if test='${internship.status eq "confirmed"}'>
-                                <td>    
-                                    <a href="AssignExaminer?internshipId=${internship.id}">
+
+                                <td ng-show="internship.status == 'confirmed'">    
+                                    <a href="#/coordinatorAssign?internshipId={{internship.id}}">
                                         Assign Examiner
                                     </a>
                                 </td>
-                            </c:if>
+
                         </tr>
-                    </c:forEach>
                 </tbody>
             </table>
-        </c:if>
-    </body>
-</html>
+

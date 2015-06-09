@@ -11,6 +11,11 @@ imAPP.config(function($routeProvider) {
                     {
                         templateUrl: '/im/partials/register-internship.html',
                         controller: 'studenRegisterController'
+                    })                    
+                    .when('/addCompany',
+                    {
+                        templateUrl: '/im/partials/add-company.html',
+                        controller: 'addCompanyController'
                     })
                     .when('/studentHome',
                     {
