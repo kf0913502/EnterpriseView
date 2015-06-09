@@ -20,7 +20,10 @@ imAPP.controller('loginController', function($scope, $http, $rootScope, $locatio
             console.log(response);
             $rootScope.loggedInUser = response;
             if (headers("type") == "class ims.entity.Student")
-                $location.path("/studentRegister");
+            {
+                
+                $location.path("/studentHome");
+            }
             else
             {
                 if ($rootScope.loggedInUser.isCoordinator == 1)

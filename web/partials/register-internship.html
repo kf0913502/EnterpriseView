@@ -9,21 +9,18 @@
 
  
             <h1>Register an Internship</h1>
-            <label>Student Id:</label>${user.studentId}
+            <label>Student Id:</label>{{loggedinUser.studentId}}
             <br>
-            <label>Name:</label>${user.fullName}
+            <label>Name:</label>{{loggedinUser.fullName}}
             <br>
-            <label>Completed Hours:</label>${user.completedCHs}
+            <label>Completed Hours:</label>{{loggedinUser.completedCHs}}
             <br>
-            <label>GPA:</label>${user.gpa}
-            <form action="register" method="post">
+            <label>GPA:</label>{{loggedinUser.gpa}}
+            <form ng-submit="registerSubmit()">
                 <input type="hidden" name="studentid" value="${user.studentId}">
                 <label for="companies">Select 4 Preferred Companies:</label>
                 <div>
-                    <select id="companies" name="companies" multiple autofocus size="8">
-                        <c:forEach var ="company" items="${companies}">
-                            <option value="${company.id}">${company.name}</option>
-                        </c:forEach>
+                    <select ng-model = "internship.preferredCompanies" ng-options = "company as company.name for company in companies" id="companies"  multiple autofocus size="8">
                     </select>
                 </div>
                 <br>
